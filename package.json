@@ -15,7 +15,7 @@
   ],
   "author": "Karim Lalani <jimmy00784@gmail.com>",
   "license": "MIT",
-  "type": "module",
+  "type": "commonjs",
   "exports": {
     ".": "./dist/index.js"
   },
