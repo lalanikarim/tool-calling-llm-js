@@ -1,9 +1,9 @@
 import {describe, expect, jest, test} from '@jest/globals';
 import { ToolCallingLLM } from '../src';
 import { ChatOllama } from '@langchain/ollama';
-import {AIMessage} from "@langchain/core/messages";
+import {AIMessage, BaseMessageChunk} from "@langchain/core/messages";
 import { z } from "zod";
-import {BindToolsInput} from "@langchain/core/dist/language_models/chat_models";
+import { BindToolsInput } from "@langchain/core/dist/language_models/chat_models";
 
 describe('Ollama With Tools', () => {
   let llm: ChatOllama;
@@ -51,6 +51,22 @@ describe('Ollama With Tools', () => {
   it('With Tool Definition', async () => {
     const llmWithTools = toolsLLM.bindTools!([weatherTool]);
     const response: AIMessage = await llmWithTools.invoke("What is weather in San Francisco?");
+    expect(response.tool_calls).toBeDefined();
+    expect(response.tool_calls!.length).toBe(1);
+    expect(response.tool_calls![0].name).toBe("weather");
+  }, 10000);
+  it('does stream', async () => {
+    const llmWithTools = toolsLLM.bindTools!([weatherTool]);
+    let generation: BaseMessageChunk | undefined = undefined;
+    for await (const chunk of await llmWithTools.stream("What is the weather in San Franscisco?")){
+      if (generation) {
+        generation = generation.concat(chunk);
+      } else {
+        generation = chunk;
+      }
+    }
+    expect(generation).not.toBeUndefined();
+    const response: AIMessage = <AIMessage>generation;
     expect(response.tool_calls).toBeDefined();
     expect(response.tool_calls!.length).toBe(1);
     expect(response.tool_calls![0].name).toBe("weather");
