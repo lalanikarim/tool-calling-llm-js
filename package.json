@@ -1,6 +1,6 @@
 {
   "name": "tool-calling-llm",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Convert any LangChain Chat Model into a Tool Calling LLM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,13 +8,18 @@
     "build": "rm -rf dist && tsc",
     "test": "jest"
   },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "keywords": [
     "langchain",
     "genai",
     "tool calling"
   ],
   "author": "Karim Lalani <jimmy00784@gmail.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "type": "commonjs",
   "exports": {
     ".": "./dist/index.js"
