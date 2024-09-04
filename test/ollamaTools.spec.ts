@@ -1,5 +1,5 @@
 import {describe, expect, jest, test} from '@jest/globals';
-import { ToolCallingLLM } from '../src/toolCallingLLM';
+import { ToolCallingLLM } from '../src';
 import { ChatOllama } from '@langchain/ollama';
 import {AIMessage} from "@langchain/core/messages";
 import { z } from "zod";

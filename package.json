@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Convert any LangChain Chat Model into a Tool Calling LLM",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest"
@@ -16,9 +17,8 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./index.ts"
+    ".": "./dist/index.js"
   },
-  "peerDependencies": {},
   "dependencies": {
     "langchain": "^0.2.17"
   },

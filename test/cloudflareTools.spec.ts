@@ -1,5 +1,5 @@
 import {describe, expect, jest, test} from '@jest/globals';
-import { ToolCallingLLM } from '../src/toolCallingLLM';
+import { ToolCallingLLM } from '../src';
 import { ChatCloudflareWorkersAI } from '@langchain/cloudflare';
 import {AIMessage} from "@langchain/core/messages";
 import { z } from "zod";
