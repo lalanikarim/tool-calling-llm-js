@@ -12,9 +12,8 @@ import {
 import {convertToOpenAITool} from '@langchain/core/utils/function_calling';
 import { CallbackManagerForLLMRun } from '@langchain/core/callbacks/manager';
 import { ChatResult } from '@langchain/core/outputs';
-import { IterableReadableStream } from '@langchain/core/utils/stream';
 
-function parseJsonGarbage(s: string): any {
+export function parseJsonGarbage(s: string): any {
     // Find the first occurrence of a JSON opening brace or bracket
     let startIndex = s.indexOf('{');
     let jsonString = '';
@@ -44,7 +43,7 @@ function parseJsonGarbage(s: string): any {
     }
 }
 
-function parseResponse(message: BaseMessage): string {
+export function parseResponse(message: BaseMessage): string {
     if (message instanceof AIMessage) {
         const { tool_calls } = message;
         if (tool_calls && tool_calls.length > 0) {
@@ -102,7 +101,15 @@ export class ToolCallingLLM<O extends BaseChatModel, CallOptions extends BaseCha
         const called_tool_name = parsed_chat_result["tool"] || null;
         const called_tool = functions.find(fn => fn["function"]["name"] === called_tool_name);
         if (!called_tool || called_tool["function"]["name"] === DEFAULT_RESPONSE_FUNCTION["function"]["name"]) {
-            throw new Error(`Failed to parse a response from ${this.model.name} output: ${chat_generation_content}`);
+            let response = "";
+            if ('tool_input' in parsed_chat_result && 'response' in parsed_chat_result['tool_input']){
+                response = parsed_chat_result['tool_input']['response'];
+            } else if ('response' in parsed_chat_result) {
+                response = parsed_chat_result['response'];
+            } else {
+                throw new Error(`Failed to parse a response from ${this.model.name} output: ${chat_generation_content}`);
+            }
+            return new AIMessage({content: response});
         }
         const tool_input = parsed_chat_result["tool_input"] || {};
         return new AIMessage({
