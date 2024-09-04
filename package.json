@@ -1,6 +1,6 @@
 {
   "name": "tool-calling-llm",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Convert any LangChain Chat Model into a Tool Calling LLM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
