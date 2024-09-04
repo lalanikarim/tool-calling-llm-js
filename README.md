@@ -25,7 +25,7 @@ Creating a Tool Calling LLM is as simple as creating a new sub class of the orig
 Below sample code demonstrates how you might enhance `ChatOllama` chat model from `langchain-ollama` package with tool calling capabilities.
 
 ```typescript
-import { ToolCallingLLM } from "./toolCallingLLM";
+import { ToolCallingLLM } from "tool-calling-llm";
 import { ChatOllama } from '@langchain/ollama';
 import { DuckDuckGoSearch } from "@langchain/community/tools/duckduckgo_search";
 
