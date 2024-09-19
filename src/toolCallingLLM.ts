@@ -18,7 +18,7 @@ import { ChatResult } from '@langchain/core/outputs';
 
 export function parseJsonGarbage(s: string): any {
     // Find the first occurrence of a JSON opening brace or bracket
-    const jsonRegex = /({[\s\S]*}|\[[\s\S]*])/;
+    const jsonRegex = /[{\[]{1}([,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]|".*?")+[}\]]{1}/;
     let match = s.match(jsonRegex);
     if (match) {
         try {
@@ -85,7 +85,10 @@ export class ToolCallingLLM<O extends BaseChatModel, CallOptions extends BaseCha
             try {
                 parsed_chat_result = parseJsonGarbage(chat_generation_content.toString());
             } catch (e) {
-                throw new Error(`'${this.model.name}' did not respond with valid JSON.\nPlease try again.\nResponse: ${chat_generation_content}`);
+                // return response as is
+                return new AIMessage({
+                    content: chat_generation_content.toString()
+                });
             }
         }
         const called_tool_name = parsed_chat_result["tool"] || null;
