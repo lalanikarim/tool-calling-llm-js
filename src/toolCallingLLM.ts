@@ -18,32 +18,19 @@ import { ChatResult } from '@langchain/core/outputs';
 
 export function parseJsonGarbage(s: string): any {
     // Find the first occurrence of a JSON opening brace or bracket
-    let startIndex = s.indexOf('{');
-    let jsonString = '';
-
-    if (startIndex === -1) {
-        // If no '{' is found, try for '['
-        const altStartIndex = s.indexOf('[');
-        if (altStartIndex !== -1) {
-            startIndex = altStartIndex;
-        } else {
-            throw new Error("No JSON object or array found in the input string.");
+    const jsonRegex = /({[\s\S]*}|\[[\s\S]*])/;
+    let match = s.match(jsonRegex);
+    if (match) {
+        try {
+            return JSON.parse(match[0]);
+        } catch {
+            let match = (s + '}').match(jsonRegex);
+            if (match) {
+                return JSON.parse(match[0]);
+            }
         }
     }
-
-    jsonString = s.substring(startIndex);
-
-    try {
-        return JSON.parse(jsonString);
-    } catch (e) {
-        // Handle JSON parsing errors
-        if (typeof e === 'string' && e.includes('Unexpected')) {
-            throw new Error("Invalid JSON in the input string.");
-        } else if (e instanceof SyntaxError) {
-            throw new Error("Invalid syntax in the input string.");
-        }
-        throw e; // Re-throw other errors
-    }
+    throw new Error("Not a valid JSON string")
 }
 
 export function parseResponse(message: BaseMessage): string {
@@ -107,18 +94,24 @@ export class ToolCallingLLM<O extends BaseChatModel, CallOptions extends BaseCha
             let response = "";
             if ('tool_input' in parsed_chat_result && 'response' in parsed_chat_result['tool_input']){
                 response = parsed_chat_result['tool_input']['response'];
+                return new AIMessage({content: response});
             } else if ('response' in parsed_chat_result) {
                 response = parsed_chat_result['response'];
-            } else {
+                return new AIMessage({content: response});
+            } else if (!('tool_input' in parsed_chat_result)) {
                 throw new Error(`Failed to parse a response from ${this.model.name} output: ${chat_generation_content}`);
             }
-            return new AIMessage({content: response});
         }
         const tool_input = parsed_chat_result["tool_input"] || {};
+        let tool_name = called_tool_name;
+        if (called_tool_name == 'function' && !('function' in tool_input)) {
+            tool_name = 'extract';
+        }
+
         return new AIMessage({
             content: "",
             tool_calls: [{
-                name: called_tool_name,
+                name: tool_name,
                 args: tool_input,
                 id: `call_${String(uuid.v4()).replace(/-/g, '')}`
             }]
