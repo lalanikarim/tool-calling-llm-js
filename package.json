@@ -1,6 +1,6 @@
 {
   "name": "tool-calling-llm",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Convert any LangChain Chat Model into a Tool Calling LLM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,20 +25,20 @@
     ".": "./dist/index.js"
   },
   "dependencies": {
-    "langchain": "^0.2.17"
+    "langchain": "^0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-typescript": "^7.24.7",
     "@jest/globals": "^29.7.0",
-    "@langchain/cloudflare": "^0.0.7",
-    "@langchain/ollama": "^0.0.4",
+    "@langchain/cloudflare": "^0.1.0",
+    "@langchain/ollama": "^0.1.0",
     "@types/jest": "^29.5.12",
     "babel-jest": "^29.7.0",
     "cloudflare": "^3.5.0",
     "jest": "^29.7.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }
